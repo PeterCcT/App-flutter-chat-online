@@ -35,7 +35,39 @@ class _ChatState extends State<Chat> {
         title: Text('Teste'),
         elevation: 0,
       ),
-      body: TextComposer(_sendMessage),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: Firestore.instance.collection('Mensagens').snapshots(),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  default:
+                    List<DocumentSnapshot> docs =
+                        snapshot.data.documents.reversed.toList();
+                    return ListView.builder(
+                      itemCount: docs.length,
+                      reverse: false,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(
+                            docs[index].data['Texto'],
+                          ),
+                        );
+                      },
+                    );
+                }
+              },
+            ),
+          ),
+          TextComposer(_sendMessage),
+        ],
+      ),
     );
   }
 }
