@@ -70,6 +70,7 @@ class _ChatState extends State<Chat> {
       if (image != null) {
         StorageUploadTask task = FirebaseStorage.instance
             .ref()
+            .child(dados['uid'])
             .child(UniqueKey().toString())
             .putFile(image);
 
